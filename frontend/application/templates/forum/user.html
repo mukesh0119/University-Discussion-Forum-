@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>USER PROFILE</title>
+	<style>
+		.user-info-card {
+			background-color: #d1e3f5;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 2px 8px rgb(255, 255, 255);
+    margin: auto;
+    display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+
+		}
+
+		.user-info-card img {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin-bottom: 20px;
+		}
+
+		.user-info-card h5 {
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.user-info-card div {
+			color: #555555;
+			margin-bottom: 10px;
+		}
+
+		.post-card {
+			background-color: white;
+			border-radius: 10px;
+			padding: 30px;
+			box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		.post-card h4 {
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.post-card p {
+			color: #555555;
+			margin-bottom: 0px;
+		}
+    .home-btn {
+        background-color: #2196F3;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 20px;
+}
+	</style>
+</head>
+
+<body>
+  <a class="home-btn" href="{{ url_for('frontend.get_posts') }}">Home</a> 
+{% from 'macros.html' import displayField %}
+  </nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4 position-fixed w-100 h-100 left-0 top-0">
+				<div class="user-info-card">
+					<img src="images/users/{{ image }}" alt="User profile picture">
+					<h5>{{ name }}</h5>
+					<div>{{ email }}</div>
+					<div>{{ role }}</div>
+				</div>
+			</div>
+			<div class="col-md-8 offset-md-4" style="margin-top: 50px;">
+				<h2>POSTS OF THE USER</h2>
+				<div style="word-wrap: break-word; white-space: normal">
+					{% for post in posts %}
+						<div class="post-card">
+							<h4><a href="{{ url_for('frontend.display_post', post_id=post.id) }}">{{ post['title'] }}</a></h4>
+							<p>{{ post.content | safe }}</p>
+						</div>
+						<br>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

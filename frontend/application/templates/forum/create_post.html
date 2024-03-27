@@ -1,0 +1,58 @@
+{# application/templates/forum/create_post.html #}
+
+{% extends "base_col_1.html"%}
+{% from 'macros.html' import displayField %}
+
+{% block title %}Create Post{% endblock %}
+
+
+{% block pageContent %}
+
+<div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul>
+    {% for category, message in messages %}
+  <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+</div>
+
+<div class="col-md-6 gedf-main">
+  <div class="card gedf-card">
+    <form action="" method="POST", enctype="multipart/form-data">
+
+      {{ form.csrf_token }}
+
+      {{ displayField(form.title, 'Enter post title') }}
+        <select id="category" name="category">
+          <option value="activities">Activities</option>
+          <option value="courses&modules">Courses&Modules</option>
+          <option value="societies">Societies</option>
+          <option value="student_union">Student Union</option>
+          <option value="accommodation">Accommodation</option>
+          <option value="transportation">Transportation</option>
+          <option value="lost&found">Lost&Found</option>
+          <option value="sale&rental">Sale&Rental</option>
+          <option value="other">Other</option>
+        </select>
+      {{ displayField(form.content, 'Type content here') }}
+      <p>Upload an image, not required.</p>
+      {{ form.image }}
+      </div>
+
+      <button class="btn btn-primary" aria-label="Create" type="submit">CREATE</button>
+      <a class="btn btn-danger" href="{{ url_for('frontend.get_posts') }}">CANCEL</a>
+
+    </form>      
+  </div>
+</div>
+
+
+    
+    {{ ckeditor.load(pkg_type="basic") }}
+    {{ ckeditor.config(name='content') }}
+
+{% endblock %}

@@ -1,0 +1,227 @@
+{# application/templates/forum/post.html #}
+<style>
+.profile-image {
+  width: 60px;
+  height: 60px;
+  object-fit: ;
+  border-radius: 50%;
+}
+.user-image {
+  width: 45px;
+  height: 45px;
+  object-fit: ;
+  border-radius: 50%;
+}
+.post-image {
+  width: 125px;
+  height: 125px;
+  object-fit:contain;
+}
+.tile__author {
+  font-size: 14px;
+}
+.latest {
+  padding: 40px 0;
+}
+
+.tile {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all .3s ease-in-out;
+}
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.tile__author {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  margin-top: 13px;
+}
+.tile__author img {
+  margin-right: 15px;
+}
+.tile__header {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom:-7px;
+}
+
+.tile__text {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: -3px;
+}
+.post-image {
+  max-width: 100%;
+  margin-bottom: 3px;
+  margin-top: -5px;
+}
+.tile__date {
+  font-size: 14px;
+  color: #a9a9a9;
+  margin-bottom: 10px;
+}
+.comment__box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.comment__box--self {
+  flex-direction: row-reverse;
+}
+.comment__box--other {
+  flex-direction: row;
+}
+.comment__avatar {
+  margin-bottom: 5px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.comment__avatar img {
+  border-radius: 50%;
+}
+.comment__bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #61b8f2;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 0;
+  max-width: 100%;
+  position: relative;
+}
+.comment__bubble--self {
+  align-items: flex-end;
+  background-color: #dcf8c6;
+}
+.comment__name {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.comment__text {
+  margin: 0;
+}
+.comment__date {
+  margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0;
+}
+.comment__form {
+  display: flex;
+  flex-direction: column;
+  margin-top: -5px;
+}
+.post-btn {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+.post-btn:hover {
+  background-color: #3e8e41;
+}
+.home-btn {
+        background-color: #2196F3;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 5px;
+}
+</style>
+
+<title>POST PAGE</title>
+{% from 'macros.html' import displayField %}
+{% include '_messages.html' %}
+      
+  <!-- START posts -->
+<div class="col-md-8">
+<div class="post-container" style="height: 40%; width: 100%; overflow-y: auto; word-wrap: break-word; white-space: normal; position: fixed;">
+  <a class="home-btn" href="{{ url_for('frontend.get_posts') }}">Home</a> 
+        <div class="tile__author"> 
+          <img class="profile-image" src="images/users/{{ owner_image }}">
+          <h2 ><a href="{{ url_for('frontend.display_user', user_id=post.user_id) }}">{{ post['user_name'] }}</a></h2>
+        </div>
+        <div class="tile__header">
+          {{ post['title'] }}
+        </div>
+        <div class="tile__text">
+          <p>{{ post['content'] | safe }}</p>
+        </div>
+        {% if post['image_url'] != '' %}
+        <img class="post-image" src="images/{{ post['image_url'] }}">
+        {% endif %}
+        <p class="tile__date">{{ post['date_added'] }}</p>
+        {% if current_user_id == post['user_id'] %}
+        <div class="tile__buttons">
+        <a class="tile__btn" href="{{ url_for('frontend.delete_post', post_id=post.id) }}" style="float: left; text-align: left;">Delete Post</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <!-- END posts -->
+
+    <!-- START comments -->
+
+<div class="comment-container" style="overflow-y: auto; height: 60%; width: 100%; bottom: 0;position: fixed;">
+    <h3 class="comment__title" style="text-align: center;">COMMENTS</h3>
+      {% if comments %}
+      {% for comment, image in comments %}
+      <div class="comment__box{% if current_user_id == comment['user_id'] %} comment__box--self{% else %} comment__box--other{% endif %}">
+        <div class="comment__author">
+          <div class="comment__bubble{% if current_user_id == comment['user_id'] %} comment__bubble--self{% endif %}">
+            <div class="comment__avatar{% if current_user_id == comment['user_id'] %} comment__avatar--self{% endif %}">
+              {% if current_user_id != comment['user_id'] %}
+              <img class="user-image" src="images/users/{{ image }}">
+              {% endif %}
+            </div>
+            {% if current_user_id != comment['user_id'] %}
+            <p class="comment__name">{{ comment['user_name']}}</p>
+            {% endif %}
+            <p class="comment__text">{{ comment['content'] | safe }}</p>
+            <div class="comment__date">
+              <span>{{ comment['date_added'] }}</span>
+              {% if current_user_id == comment['user_id'] %}
+              <a class="comment__btn" href="{{ url_for('frontend.delete_comment', post_id=post.id, comment_id=comment.id) }}">Delete Comment</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+      <div class="comment__form-container">
+        <form class="comment__form" action="" method="POST">
+          {{ form.csrf_token }}
+          {{ displayField(form.content, 'Type comment here...') }}
+          <button class="btn btn--solid post-btn" type="submit">SUBMIT</button>
+        </form>
+        {{ ckeditor.load(pkg_type="basic") }}
+        {{ ckeditor.config(name='content') }}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  

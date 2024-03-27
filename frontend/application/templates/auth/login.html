@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Page</title>
+    <style>
+      /* Background Image */
+      body {
+        background: linear-gradient(rgba(0, 0, 0, 0.4),rgba(0, 0, 0, 0.4)),url('/static/images/background.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* added property */
+        position: relative;
+      }
+
+      /* Color Box */
+      .login-box {
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 10px;
+        width: fit-content;
+        margin: 0 auto; /* modified property */
+        padding: 50px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      /* Form */
+      form {
+        display: inline-block;
+      }
+
+      input[type="email"], input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        background-color: #d4d6d6;
+      }
+
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Register link */
+      .form__link {
+        margin-top: 20px;
+        color: black;
+      }
+
+      .register_link {
+        color: black;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-box">
+      <img src="/static/images/logo.jpg" alt="Logo" width="130">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+
+      <h2>Login</h2>
+
+      <form action="" method="POST">
+        <input type="email" id="email" name="email" placeholder="Enter email" required>
+        <br>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <br>
+        <input type="submit" value="SUBMIT">
+        {{ form.csrf_token }}
+        <p class="form__link">Don't have an account? <a class="register_link" href="{{ url_for('frontend.sign_up') }}">Register</a></p>
+      </form>
+    </div>
+  </body>
+</html>

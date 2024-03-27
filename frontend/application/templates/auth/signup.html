@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup page</title>
+  <style>
+    /* Background Image */
+    body {
+      background: linear-gradient(rgba(0, 0, 0, 0.4),rgba(0, 0, 0, 0.4)),url('/static/images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed; /* added property */
+      position: relative;
+    }
+
+    /* Color Box */
+    .signup-box {
+      background-color: rgba(255, 255, 255, 1);
+      border-radius: 10px;
+      width: fit-content;
+      margin: 10% auto;
+      padding: 50px;
+      text-align: center;
+    }
+
+    /* Form */
+    form {
+      display: inline-block;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"], select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      background-color: #d4d6d6;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Login link */
+    .form__link {
+      margin-top: 20px;
+      color: black;
+    }
+
+    .login__link {
+      color: black;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+  <body>
+    <div class="signup-box">
+      <img src="/static/images/logo.jpg" alt="Logo" width="130">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+          {% endif %}
+          {% endwith %}
+
+        <h2 class="form__header">Sign Up</h2>
+
+      <form action="{{ url_for('frontend.sign_up') }}" method="POST">
+
+        {{ form.csrf_token }}
+
+        <input type="text" id="first_name" name="first_name" placeholder="Enter first name" required autofocus>
+        <br>
+        <input type="text" id="last_name" name="last_name" placeholder="Enter last name" required autofocus>
+        <br>
+        <input type="email" id="email" name="email" placeholder="Enter email" required>
+        <br>
+        <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number (Not required)">
+        <br>
+        <input type="text" id="uni_number" name="uni_number" placeholder="Enter university ID number, for students">
+        <br>
+        <select id="user_role" name="user_role">
+          <option value="staff">Staff</option>
+          <option value="academic_staff">Academic Staff</option>
+          <option value="student">Student</option>
+          <option value="graduate">Graduate</option>
+        </select>
+        <br>
+        <input type="password" id="password" name="password" placeholder="Enter password" required class="input__field password__field">
+        <br>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required class="input__field password__field">
+        <br>
+        <input type="submit" value="SUBMIT">
+        <p class="form__link">Already have an account? <a class="login__link" href="{{ url_for('frontend.login_route') }}">Login</a></p>
+
+
+      </form>
+    </div>
+  </body>
+</html>

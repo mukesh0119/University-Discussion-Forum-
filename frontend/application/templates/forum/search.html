@@ -1,0 +1,119 @@
+{% extends "base_col_1.html" %}
+{% block title %} SEARCH RESULTS {% endblock %}
+
+{% block pageContent%}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    .card-header {
+        background-color: #c6e2ff;
+        color: white;
+    }
+
+    .nav-link.active {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-outline-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+    .profile-image {
+      width: 60px;
+      height: 60px;
+      object-fit: ;
+      border-radius: 50%;
+    }
+    .post-image {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+</style>
+
+<div>
+
+</div>
+
+<div class="col-md-6 gedf-main">
+    <div class="card gedf-card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Start a discussion</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                    <div class="form-group">
+                        <label class="sr-only" for="message">post</label>
+                        <a class="btn btn--link" href="{{ url_for('frontend.create_post') }}">New Post</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="text-align: center; font-size: medium; color: orange; font-weight: bold; margin-top: -27px;">Search Results for "{{ words }}"</h2>
+
+    {% if page > 1 %}
+    <a class="btn btn-outline-success my-2 my-sm-0" href="{{ url_for('frontend.search', page=page-1) }}">Previous</a>
+    {% endif %}
+
+    {% if page_limit == True %}
+    <a class="btn btn-outline-success my-2 my-sm-0" href="{{ url_for('frontend.search', page=page+1) }}">Next</a>
+    {% endif %}
+
+    {% for post,image in data %}
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="mr-2">
+                        <img class="profile-image" src="images/users/{{ image }}">
+                    </div>
+                    <div class="ml-2">
+                        <div class="h5 m-0"><a href="{{ url_for('frontend.display_user', user_id=post.user_id) }}">{{ post['user_name'] }}</a></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="dropdown">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i>{{ post['date_added']}}</div>
+            <a class="card-link" href="{{ url_for('frontend.display_post', post_id=post.id) }}">
+                <h5 class="card-title">{{ post['title'] }}</h5>
+            </a>
+            <p class="card-text">{{ post.content[:40] | safe }}{% if post.content|length > 30 %}...{% endif %}</p>
+            
+            {% if post['image_url'] != '' %}
+            <img class="post-image" src="static/images/{{ post['image_url'] }}">
+            {% endif %}  
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('frontend.display_post', post_id=post.id) }}" class="card-link"><i class="fa fa-comment"></i> Comment</a>
+        </div>
+    </div>
+{% endfor %}
+
+{% if page > 1 %}
+<a class="btn btn-outline-success my-2 my-sm-0" href="{{ url_for('frontend.search', page=page-1) }}">Previous</a>
+{% endif %}
+
+{% if page_limit == True %}
+<a class="btn btn-outline-success my-2 my-sm-0" href="{{ url_for('frontend.search', page=page+1) }}">Next</a>
+{% endif %}
+
+</div>
+
+{% endblock %}
