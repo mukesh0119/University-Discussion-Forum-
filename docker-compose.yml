@@ -1,0 +1,74 @@
+version: '3'
+volumes:
+  post_mysql:
+  user_mysql:
+  
+services:
+
+  user-service:
+      build: ./user-service
+      ports:
+        - "5001:5001"
+      volumes:
+        - ./user-service:/user-service
+      depends_on:
+        - user-db
+      networks:
+        - service-network
+
+  user-db:
+      image: mysql
+      restart: always
+      environment:
+        MYSQL_DATABASE: user
+        MYSQL_USER: user-service
+        MYSQL_PASSWORD: pass1234
+        MYSQL_ROOT_PASSWORD: pass1234
+        MYSQL_HOST: "%"
+      volumes:
+        - user_mysql:/var/lib/mysql
+      ports:
+        - 3307:3306
+      networks:
+        - service-network
+
+  post-service:
+      build: ./post-service
+      ports:
+        - "5002:5002"
+      volumes:
+        - ./post-service:/post-service
+      depends_on:
+        - post-db
+      networks:
+        - service-network
+
+  post-db:
+      image: mysql
+      restart: always
+      environment:
+        MYSQL_DATABASE: post
+        MYSQL_USER: post-service
+        MYSQL_PASSWORD: pass1234
+        MYSQL_ROOT_PASSWORD: pass1234
+        MYSQL_HOST: "%"
+      volumes:
+        - post_mysql:/var/lib/mysql
+      ports:
+        - 3308:3306
+      networks:
+        - service-network
+
+  frontend:
+      build: ./frontend
+      ports:
+        - "5003:5003"
+      restart: always    
+      volumes:
+        - ./frontend:/frontend
+      networks:
+        - service-network
+          
+networks:
+  service-network:
+    name: service-network
